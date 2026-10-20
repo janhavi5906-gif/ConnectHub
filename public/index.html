@@ -1,0 +1,3687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ConnectHub</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+
+        /* ==================== LOGIN / REGISTER ==================== */
+
+        .auth-container {
+            width: 900px;
+            max-width: 95%;
+            min-height: 550px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.12);
+            display: flex;
+            overflow: hidden;
+            margin: 70px auto;
+        }
+
+        .auth-left {
+            width: 45%;
+            background: #2563eb;
+            color: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-left h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .auth-left p {
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .auth-right {
+            width: 55%;
+            padding: 50px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            width: 50%;
+            padding: 12px;
+            border: none;
+            background: none;
+            font-size: 17px;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .tab.active {
+            color: #2563eb;
+            border-bottom: 3px solid #2563eb;
+            font-weight: bold;
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+        }
+
+        .form h2 {
+            margin-bottom: 25px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        #authMessage {
+            margin-top: 18px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+
+        /* ==================== DASHBOARD ==================== */
+
+        .dashboard {
+            display: none;
+        }
+
+        .navbar {
+            min-height: 65px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 7%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2563eb;
+            cursor: pointer;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-user span {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+
+        /* ==================== NOTIFICATIONS ==================== */
+
+        .notification-wrapper {
+            position: relative;
+        }
+
+        .notification-btn {
+            position: relative;
+            border: none;
+            background: #eef2ff;
+            color: #2563eb;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .notification-btn:hover {
+            background: #dbeafe;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 19px;
+            height: 19px;
+            padding: 2px 5px;
+            border-radius: 20px;
+            background: #ef4444;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-panel {
+            display: none;
+            position: absolute;
+            top: 52px;
+            right: 0;
+            width: 360px;
+            max-width: 90vw;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            z-index: 200;
+        }
+
+        .notification-panel.show {
+            display: block;
+        }
+
+        .notification-header {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-header h3 {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .mark-all-btn {
+            border: none;
+            background: none;
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .notification-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: #f8fafc;
+        }
+
+        .notification-item.unread {
+            background: #eff6ff;
+        }
+
+        .notification-icon {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            border-radius: 50%;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .notification-sender {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .notification-date {
+            font-size: 11px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .no-notifications {
+            padding: 30px 15px;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+        }
+
+
+        .logout-btn {
+            border: none;
+            background: #ef4444;
+            color: white;
+            padding: 9px 16px;
+            border-radius: 7px;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        .main {
+            width: 1000px;
+            max-width: 94%;
+            margin: 30px auto;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            margin-bottom: 5px;
+        }
+
+        .welcome p {
+            color: #666;
+        }
+
+
+        /* ==================== SEARCH ==================== */
+
+        .search-section {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            margin-bottom: 25px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .search-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .search-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .clear-search-btn {
+            border: none;
+            background: #e5e7eb;
+            color: #333;
+            padding: 0 15px;
+            border-radius: 8px;
+        }
+
+        .search-results {
+            margin-top: 18px;
+        }
+
+        .search-title {
+            margin: 15px 0 10px;
+            font-size: 18px;
+        }
+
+        .search-user-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .search-user-card:hover {
+            background: #f8fafc;
+        }
+
+        .search-avatar {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .search-user-name {
+            font-weight: bold;
+        }
+
+        .search-user-email {
+            color: #888;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        .search-post-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+
+        .search-post-author {
+            font-weight: bold;
+            color: #2563eb;
+            cursor: pointer;
+            margin-bottom: 7px;
+        }
+
+        .search-post-content {
+            line-height: 1.5;
+        }
+
+        .no-search-results {
+            color: #777;
+            text-align: center;
+            padding: 15px;
+        }
+
+
+        /* ==================== PEOPLE ==================== */
+
+        .people-section {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            margin-bottom: 25px;
+        }
+
+        .people-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .people-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .person-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .person-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .person-avatar {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .person-name {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .person-name:hover {
+            color: #2563eb;
+        }
+
+        .person-email {
+            font-size: 12px;
+            color: #888;
+            margin-top: 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .follow-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 8px 13px;
+            border-radius: 7px;
+            white-space: nowrap;
+        }
+
+        .follow-btn.following {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .follow-btn:hover {
+            opacity: 0.9;
+        }
+
+
+        /* ==================== CREATE POST ==================== */
+
+        .create-post {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            margin-bottom: 25px;
+        }
+
+        .create-post h3 {
+            margin-top: 0;
+        }
+
+        .post-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .post-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .feed-title {
+            margin-bottom: 15px;
+        }
+
+
+        /* ==================== POSTS ==================== */
+
+        .post {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .author-name {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .author-name:hover {
+            color: #2563eb;
+        }
+
+        .post-date {
+            font-size: 12px;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        .delete-btn {
+            border: none;
+            background: none;
+            color: #ef4444;
+            font-size: 14px;
+        }
+
+        .post-content {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 18px;
+            white-space: pre-wrap;
+        }
+
+        .post-actions {
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+        }
+
+        .like-btn {
+            border: none;
+            background: none;
+            font-size: 15px;
+            color: #555;
+            padding: 6px 0;
+        }
+
+        .like-btn:hover {
+            color: #2563eb;
+        }
+
+
+        /* ==================== COMMENTS ==================== */
+
+        .comments-section {
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .comments-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .comment {
+            background: #f4f6f8;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            margin-top: 4px;
+            white-space: pre-wrap;
+        }
+
+        .comment-date {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .comment-input {
+            flex: 1;
+            margin-bottom: 0;
+            padding: 10px;
+        }
+
+        .comment-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 7px;
+        }
+
+        .comment-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .no-comments {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .empty-feed {
+            text-align: center;
+            padding: 50px;
+            color: #777;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+        }
+
+
+        /* ==================== PROFILE PAGE ==================== */
+
+        .profile-page {
+            display: none;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            margin-bottom: 25px;
+        }
+
+        .back-btn {
+            border: none;
+            background: #eef2ff;
+            color: #2563eb;
+            padding: 9px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .profile-details {
+            flex: 1;
+        }
+
+        .profile-details h1 {
+            margin: 0 0 8px;
+        }
+
+        .profile-email {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .profile-bio {
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .profile-follow-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .profile-follow-btn.following {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .profile-posts-title {
+            margin-bottom: 15px;
+        }
+
+
+        /* ==================== RESPONSIVE ==================== */
+
+        @media (max-width: 700px) {
+
+            .auth-container {
+                flex-direction: column;
+                margin: 20px auto;
+            }
+
+            .auth-left,
+            .auth-right {
+                width: 100%;
+            }
+
+            .auth-left {
+                padding: 35px;
+            }
+
+            .auth-right {
+                padding: 35px;
+            }
+
+            .navbar {
+                padding: 10px 4%;
+            }
+
+            .nav-user span {
+                display: none;
+            }
+
+            .people-list {
+                grid-template-columns: 1fr;
+            }
+
+            .comment-form {
+                flex-direction: column;
+            }
+
+            .profile-top {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-btn,
+            .clear-search-btn {
+                padding: 12px;
+            }
+
+            .notification-panel {
+                right: -50px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================== LOGIN / REGISTER ==================== -->
+
+<div id="authPage">
+
+    <div class="auth-container">
+
+        <div class="auth-left">
+
+            <h1>ConnectHub</h1>
+
+            <p>
+                Connect with people, share your thoughts,
+                discover new posts and build your community.
+            </p>
+
+            <p>
+                Your social world, all in one place.
+            </p>
+
+        </div>
+
+
+        <div class="auth-right">
+
+            <div class="tabs">
+
+                <button
+                    class="tab active"
+                    onclick="showForm('login')">
+
+                    Login
+
+                </button>
+
+                <button
+                    class="tab"
+                    onclick="showForm('register')">
+
+                    Register
+
+                </button>
+
+            </div>
+
+
+            <!-- LOGIN -->
+
+            <div id="loginForm" class="form active">
+
+                <h2>Welcome Back</h2>
+
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="Email">
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Password">
+
+                <button
+                    class="submit-btn"
+                    onclick="login()">
+
+                    Login
+
+                </button>
+
+            </div>
+
+
+            <!-- REGISTER -->
+
+            <div id="registerForm" class="form">
+
+                <h2>Create Account</h2>
+
+                <input
+                    type="text"
+                    id="registerName"
+                    placeholder="Full Name">
+
+                <input
+                    type="email"
+                    id="registerEmail"
+                    placeholder="Email">
+
+                <input
+                    type="password"
+                    id="registerPassword"
+                    placeholder="Password">
+
+                <button
+                    class="submit-btn"
+                    onclick="register()">
+
+                    Create Account
+
+                </button>
+
+            </div>
+
+
+            <div id="authMessage"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==================== DASHBOARD ==================== -->
+
+<div id="dashboard" class="dashboard">
+
+    <nav class="navbar">
+
+        <div
+            class="logo"
+            onclick="showDashboard()">
+
+            ConnectHub
+
+        </div>
+
+
+        <div class="nav-user">
+
+            <span
+                id="navUserName"
+                onclick="openMyProfile()">
+            </span>
+
+
+            <!-- ==================== NOTIFICATIONS ==================== -->
+
+            <div class="notification-wrapper">
+
+                <button
+                    class="notification-btn"
+                    onclick="toggleNotifications()">
+
+                    🔔
+
+                    <span
+                        id="notificationBadge"
+                        class="notification-badge">
+                        0
+                    </span>
+
+                </button>
+
+
+                <div
+                    id="notificationPanel"
+                    class="notification-panel">
+
+                    <div class="notification-header">
+
+                        <h3>
+                            Notifications
+                        </h3>
+
+                        <button
+                            class="mark-all-btn"
+                            onclick="markAllNotificationsRead()">
+
+                            Mark all as read
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="notificationList"
+                        class="notification-list">
+
+                        <div class="no-notifications">
+
+                            No notifications yet.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="logout-btn"
+                onclick="logout()">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ==================== MAIN DASHBOARD ==================== -->
+
+    <main
+        id="dashboardMain"
+        class="main">
+
+        <div class="welcome">
+
+            <h2>
+                Welcome,
+                <span id="welcomeName"></span>
+                👋
+            </h2>
+
+            <p>
+                Share something with your community.
+            </p>
+
+        </div>
+
+
+        <!-- ==================== SEARCH ==================== -->
+
+        <div class="search-section">
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="🔎 Search people or posts..."
+                    onkeydown="handleSearchKey(event)">
+
+                <button
+                    class="search-btn"
+                    onclick="searchConnectHub()">
+
+                    Search
+
+                </button>
+
+                <button
+                    class="clear-search-btn"
+                    onclick="clearSearch()">
+
+                    Clear
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="searchResults"
+                class="search-results">
+            </div>
+
+        </div>
+
+
+        <!-- PEOPLE -->
+
+        <div class="people-section">
+
+            <h3>People</h3>
+
+            <div
+                id="peopleList"
+                class="people-list">
+
+                <div class="loading">
+                    Loading people...
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CREATE POST -->
+
+        <div class="create-post">
+
+            <h3>Create a Post</h3>
+
+            <textarea
+                id="postContent"
+                placeholder="What's on your mind?">
+            </textarea>
+
+            <button
+                class="post-btn"
+                onclick="createPost()">
+
+                Post
+
+            </button>
+
+            <div id="postMessage"></div>
+
+        </div>
+
+
+        <!-- FEED -->
+
+        <h2 class="feed-title">
+            Latest Posts
+        </h2>
+
+        <div id="feed">
+
+            <div class="loading">
+                Loading posts...
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ==================== PROFILE PAGE ==================== -->
+
+    <main
+        id="profilePage"
+        class="main profile-page">
+
+        <button
+            class="back-btn"
+            onclick="showDashboard()">
+
+            ← Back to Dashboard
+
+        </button>
+
+
+        <div
+            id="profileContent"
+            class="profile-card">
+
+            <div class="loading">
+                Loading profile...
+            </div>
+
+        </div>
+
+
+        <h2 class="profile-posts-title">
+            Posts
+        </h2>
+
+
+        <div id="profilePosts">
+
+            <div class="loading">
+                Loading posts...
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+
+/* ==================== AUTH ==================== */
+
+
+function showForm(formName) {
+
+    const loginForm =
+        document.getElementById("loginForm");
+
+    const registerForm =
+        document.getElementById("registerForm");
+
+    const tabs =
+        document.querySelectorAll(".tab");
+
+
+    if (formName === "login") {
+
+        loginForm.classList.add("active");
+
+        registerForm.classList.remove("active");
+
+        tabs[0].classList.add("active");
+
+        tabs[1].classList.remove("active");
+
+    } else {
+
+        registerForm.classList.add("active");
+
+        loginForm.classList.remove("active");
+
+        tabs[1].classList.add("active");
+
+        tabs[0].classList.remove("active");
+
+    }
+
+
+    document.getElementById(
+        "authMessage"
+    ).textContent = "";
+
+}
+
+
+
+async function register() {
+
+    const name =
+        document.getElementById(
+            "registerName"
+        ).value.trim();
+
+    const email =
+        document.getElementById(
+            "registerEmail"
+        ).value.trim();
+
+    const password =
+        document.getElementById(
+            "registerPassword"
+        ).value;
+
+    const message =
+        document.getElementById(
+            "authMessage"
+        );
+
+
+    if (!name || !email || !password) {
+
+        message.textContent =
+            "Please fill all fields.";
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/auth/register",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+        message.textContent =
+            data.message;
+
+
+        if (response.ok) {
+
+            document.getElementById(
+                "registerName"
+            ).value = "";
+
+            document.getElementById(
+                "registerEmail"
+            ).value = "";
+
+            document.getElementById(
+                "registerPassword"
+            ).value = "";
+
+            showForm("login");
+
+        }
+
+    } catch (error) {
+
+        message.textContent =
+            "Unable to connect to server.";
+
+    }
+
+}
+
+
+
+async function login() {
+
+    const email =
+        document.getElementById(
+            "loginEmail"
+        ).value.trim();
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        ).value;
+
+    const message =
+        document.getElementById(
+            "authMessage"
+        );
+
+
+    if (!email || !password) {
+
+        message.textContent =
+            "Please enter email and password.";
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/auth/login",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        message.textContent =
+            data.message;
+
+
+        if (response.ok) {
+
+            localStorage.setItem(
+                "connectHubToken",
+                data.token
+            );
+
+            localStorage.setItem(
+                "connectHubUser",
+                JSON.stringify(data.user)
+            );
+
+            showDashboard();
+
+        }
+
+    } catch (error) {
+
+        message.textContent =
+            "Unable to connect to server.";
+
+    }
+
+}
+
+
+
+/* ==================== DASHBOARD ==================== */
+
+
+function showDashboard() {
+
+    const user =
+        JSON.parse(
+            localStorage.getItem(
+                "connectHubUser"
+            )
+        );
+
+
+    if (!user) {
+        return;
+    }
+
+
+    document.getElementById(
+        "authPage"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "dashboard"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "dashboardMain"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "profilePage"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "navUserName"
+    ).textContent = user.name;
+
+
+    document.getElementById(
+        "welcomeName"
+    ).textContent = user.name;
+
+
+    loadPeople();
+
+    loadPosts();
+
+    loadNotificationCount();
+
+}
+
+
+
+function logout() {
+
+    localStorage.removeItem(
+        "connectHubToken"
+    );
+
+    localStorage.removeItem(
+        "connectHubUser"
+    );
+
+
+    document.getElementById(
+        "dashboard"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "authPage"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "loginEmail"
+    ).value = "";
+
+
+    document.getElementById(
+        "loginPassword"
+    ).value = "";
+
+
+    clearSearch();
+
+    closeNotifications();
+
+    showForm("login");
+
+}
+
+
+
+/* ==================== NOTIFICATIONS ==================== */
+
+
+function toggleNotifications() {
+
+    const panel =
+        document.getElementById(
+            "notificationPanel"
+        );
+
+
+    if (panel.classList.contains("show")) {
+
+        panel.classList.remove("show");
+
+    } else {
+
+        panel.classList.add("show");
+
+        loadNotifications();
+
+    }
+
+}
+
+
+
+function closeNotifications() {
+
+    const panel =
+        document.getElementById(
+            "notificationPanel"
+        );
+
+
+    if (panel) {
+
+        panel.classList.remove("show");
+
+    }
+
+}
+
+
+
+async function loadNotificationCount() {
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    if (!token) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/notifications/unread-count",
+                {
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const badge =
+            document.getElementById(
+                "notificationBadge"
+            );
+
+
+        if (data.count > 0) {
+
+            badge.textContent =
+                data.count > 99
+                ? "99+"
+                : data.count;
+
+            badge.style.display =
+                "flex";
+
+        } else {
+
+            badge.style.display =
+                "none";
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Notification count error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+async function loadNotifications() {
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    const list =
+        document.getElementById(
+            "notificationList"
+        );
+
+
+    if (!token) {
+        return;
+    }
+
+
+    list.innerHTML =
+        '<div class="loading">Loading notifications...</div>';
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/notifications",
+                {
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            list.innerHTML = `
+                <div class="no-notifications">
+                    ${escapeHtml(data.message)}
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        if (data.length === 0) {
+
+            list.innerHTML = `
+                <div class="no-notifications">
+                    🎉 No notifications yet.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        list.innerHTML = "";
+
+
+        data.forEach(notification => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "notification-item";
+
+
+            if (!notification.read) {
+
+                item.classList.add(
+                    "unread"
+                );
+
+            }
+
+
+            const senderName =
+                notification.sender?.name ||
+                "Someone";
+
+
+            let icon = "🔔";
+
+
+            if (
+                notification.type ===
+                "like"
+            ) {
+
+                icon = "❤️";
+
+            } else if (
+                notification.type ===
+                "comment"
+            ) {
+
+                icon = "💬";
+
+            } else if (
+                notification.type ===
+                "follow"
+            ) {
+
+                icon = "👤";
+
+            }
+
+
+            const date =
+                new Date(
+                    notification.createdAt
+                ).toLocaleString();
+
+
+            item.innerHTML = `
+
+                <div class="notification-icon">
+
+                    ${icon}
+
+                </div>
+
+
+                <div class="notification-content">
+
+                    <div class="notification-message">
+
+                        <span class="notification-sender">
+
+                            ${escapeHtml(senderName)}
+
+                        </span>
+
+                        ${
+                            notification.type === "like"
+                            ? " liked your post."
+                            :
+                            notification.type === "comment"
+                            ? " commented on your post."
+                            :
+                            " started following you."
+                        }
+
+                    </div>
+
+
+                    <div class="notification-date">
+
+                        ${date}
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            item.onclick =
+                () =>
+                    markNotificationRead(
+                        notification._id
+                    );
+
+
+            list.appendChild(
+                item
+            );
+
+        });
+
+
+    } catch (error) {
+
+        console.log(
+            "Notifications error:",
+            error
+        );
+
+
+        list.innerHTML = `
+            <div class="no-notifications">
+                Unable to load notifications.
+            </div>
+        `;
+
+    }
+
+}
+
+
+
+async function markNotificationRead(
+    notificationId
+) {
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/notifications/${notificationId}/read`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        if (response.ok) {
+
+            loadNotifications();
+
+            loadNotificationCount();
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Mark notification error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+async function markAllNotificationsRead() {
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/notifications/read-all",
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        if (response.ok) {
+
+            loadNotifications();
+
+            loadNotificationCount();
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Mark all notifications error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* ==================== SEARCH ==================== */
+
+
+function handleSearchKey(event) {
+
+    if (event.key === "Enter") {
+
+        searchConnectHub();
+
+    }
+
+}
+
+
+
+async function searchConnectHub() {
+
+    const input =
+        document.getElementById(
+            "searchInput"
+        );
+
+    const results =
+        document.getElementById(
+            "searchResults"
+        );
+
+    const query =
+        input.value.trim();
+
+
+    if (!query) {
+
+        results.innerHTML = "";
+
+        return;
+
+    }
+
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    results.innerHTML =
+        '<div class="loading">Searching...</div>';
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/users/search?q=${encodeURIComponent(query)}`,
+                {
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            results.innerHTML =
+                `<div class="no-search-results">
+                    ${escapeHtml(data.message)}
+                </div>`;
+
+            return;
+
+        }
+
+
+        let html = "";
+
+
+        html += `
+            <h3 class="search-title">
+                👤 People
+            </h3>
+        `;
+
+
+        if (data.users.length === 0) {
+
+            html += `
+                <div class="no-search-results">
+                    No matching people found.
+                </div>
+            `;
+
+        } else {
+
+            data.users.forEach(user => {
+
+                const firstLetter =
+                    user.name
+                        .charAt(0)
+                        .toUpperCase();
+
+
+                html += `
+
+                    <div
+                        class="search-user-card"
+                        onclick="openProfile('${user._id}')">
+
+                        <div class="search-avatar">
+
+                            ${escapeHtml(firstLetter)}
+
+                        </div>
+
+                        <div>
+
+                            <div class="search-user-name">
+
+                                ${escapeHtml(user.name)}
+
+                            </div>
+
+                            <div class="search-user-email">
+
+                                ${escapeHtml(user.email)}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+        html += `
+            <h3 class="search-title">
+                📝 Posts
+            </h3>
+        `;
+
+
+        if (data.posts.length === 0) {
+
+            html += `
+                <div class="no-search-results">
+                    No matching posts found.
+                </div>
+            `;
+
+        } else {
+
+            data.posts.forEach(post => {
+
+                const authorName =
+                    post.author?.name ||
+                    "Unknown User";
+
+
+                html += `
+
+                    <div class="search-post-card">
+
+                        <div
+                            class="search-post-author"
+                            onclick="openProfile('${post.author?._id}')">
+
+                            ${escapeHtml(authorName)}
+
+                        </div>
+
+                        <div class="search-post-content">
+
+                            ${escapeHtml(post.content)}
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+        results.innerHTML = html;
+
+
+    } catch (error) {
+
+        console.log(
+            "Search error:",
+            error
+        );
+
+
+        results.innerHTML =
+            '<div class="no-search-results">Unable to connect to server.</div>';
+
+    }
+
+}
+
+
+
+function clearSearch() {
+
+    document.getElementById(
+        "searchInput"
+    ).value = "";
+
+
+    document.getElementById(
+        "searchResults"
+    ).innerHTML = "";
+
+}
+
+
+
+/* ==================== PEOPLE ==================== */
+
+
+async function loadPeople() {
+
+    const peopleList =
+        document.getElementById(
+            "peopleList"
+        );
+
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    const currentUser =
+        JSON.parse(
+            localStorage.getItem(
+                "connectHubUser"
+            )
+        );
+
+
+    peopleList.innerHTML =
+        '<div class="loading">Loading people...</div>';
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/users",
+                {
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            peopleList.innerHTML =
+                '<div class="no-comments">Unable to load people.</div>';
+
+            return;
+
+        }
+
+
+        const users =
+            await response.json();
+
+
+        const otherUsers =
+            users.filter(
+                user =>
+                    user._id !== currentUser.id
+            );
+
+
+        if (otherUsers.length === 0) {
+
+            peopleList.innerHTML =
+                '<div class="no-comments">No other users yet. Ask someone to create an account!</div>';
+
+            return;
+
+        }
+
+
+        peopleList.innerHTML = "";
+
+
+        otherUsers.forEach(user => {
+
+            const isFollowing =
+                user.followers?.some(
+                    follower =>
+                        follower.toString() ===
+                        currentUser.id
+                );
+
+
+            const personDiv =
+                document.createElement(
+                    "div"
+                );
+
+
+            personDiv.className =
+                "person-card";
+
+
+            const firstLetter =
+                user.name
+                    .charAt(0)
+                    .toUpperCase();
+
+
+            personDiv.innerHTML = `
+
+                <div class="person-info">
+
+                    <div
+                        class="person-avatar"
+                        onclick="openProfile('${user._id}')">
+
+                        ${escapeHtml(firstLetter)}
+
+                    </div>
+
+
+                    <div>
+
+                        <div
+                            class="person-name"
+                            onclick="openProfile('${user._id}')">
+
+                            ${escapeHtml(user.name)}
+
+                        </div>
+
+                        <div class="person-email">
+
+                            ${escapeHtml(user.email)}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="follow-btn ${isFollowing ? "following" : ""}"
+                    onclick="toggleFollow('${user._id}')">
+
+                    ${isFollowing ? "Following" : "Follow"}
+
+                </button>
+
+            `;
+
+
+            peopleList.appendChild(
+                personDiv
+            );
+
+        });
+
+
+    } catch (error) {
+
+        peopleList.innerHTML =
+            '<div class="no-comments">Unable to connect to server.</div>';
+
+    }
+
+}
+
+
+
+async function toggleFollow(userId) {
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/users/${userId}/follow`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(data.message);
+
+            return;
+
+        }
+
+
+        loadPeople();
+
+        loadNotificationCount();
+
+
+    } catch (error) {
+
+        console.log(
+            "Follow error:",
+            error
+        );
+
+        alert(
+            "Unable to follow user."
+        );
+
+    }
+
+}
+
+
+
+/* ==================== PROFILE ==================== */
+
+
+async function openProfile(userId) {
+
+    closeNotifications();
+
+
+    document.getElementById(
+        "dashboardMain"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "profilePage"
+    ).style.display = "block";
+
+
+    const profileContent =
+        document.getElementById(
+            "profileContent"
+        );
+
+
+    const profilePosts =
+        document.getElementById(
+            "profilePosts"
+        );
+
+
+    profileContent.innerHTML =
+        '<div class="loading">Loading profile...</div>';
+
+
+    profilePosts.innerHTML =
+        '<div class="loading">Loading posts...</div>';
+
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/users/${userId}`,
+                {
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            profileContent.innerHTML =
+                `<div class="no-comments">
+                    ${escapeHtml(data.message)}
+                </div>`;
+
+            return;
+
+        }
+
+
+        const user =
+            data.user;
+
+
+        const currentUser =
+            JSON.parse(
+                localStorage.getItem(
+                    "connectHubUser"
+                )
+            );
+
+
+        const isCurrentUser =
+            user.id === currentUser.id;
+
+
+        let isFollowing = false;
+
+
+        if (!isCurrentUser) {
+
+            const peopleResponse =
+                await fetch(
+                    "/api/users",
+                    {
+                        headers: {
+                            "Authorization":
+                                "Bearer " + token
+                        }
+                    }
+                );
+
+
+            const users =
+                await peopleResponse.json();
+
+
+            const target =
+                users.find(
+                    person =>
+                        person._id === user.id
+                );
+
+
+            if (target) {
+
+                isFollowing =
+                    target.followers?.some(
+                        follower =>
+                            follower.toString() ===
+                            currentUser.id
+                    );
+
+            }
+
+        }
+
+
+        const firstLetter =
+            user.name
+                .charAt(0)
+                .toUpperCase();
+
+
+        profileContent.innerHTML = `
+
+            <button
+                class="back-btn"
+                onclick="showDashboard()">
+
+                ← Back to Dashboard
+
+            </button>
+
+
+            <div class="profile-top">
+
+
+                <div class="profile-avatar">
+
+                    ${escapeHtml(firstLetter)}
+
+                </div>
+
+
+                <div class="profile-details">
+
+                    <h1>
+                        ${escapeHtml(user.name)}
+                    </h1>
+
+
+                    <div class="profile-email">
+
+                        ${escapeHtml(user.email)}
+
+                    </div>
+
+
+                    <div class="profile-bio">
+
+                        ${
+                            user.bio
+                            ?
+                            escapeHtml(user.bio)
+                            :
+                            "No bio added yet."
+                        }
+
+                    </div>
+
+
+                    <div class="profile-stats">
+
+                        <div class="stat">
+
+                            <span class="stat-number">
+
+                                ${user.followers}
+
+                            </span>
+
+                            <span class="stat-label">
+
+                                Followers
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="stat">
+
+                            <span class="stat-number">
+
+                                ${user.following}
+
+                            </span>
+
+                            <span class="stat-label">
+
+                                Following
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="stat">
+
+                            <span class="stat-number">
+
+                                ${data.posts.length}
+
+                            </span>
+
+                            <span class="stat-label">
+
+                                Posts
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    ${
+                        !isCurrentUser
+                        ?
+                        `
+                        <button
+                            class="profile-follow-btn ${isFollowing ? "following" : ""}"
+                            onclick="profileToggleFollow('${user.id}')">
+
+                            ${isFollowing ? "Following" : "Follow"}
+
+                        </button>
+                        `
+                        :
+                        `
+                        <button
+                            class="profile-follow-btn"
+                            onclick="alert('Profile editing will be added soon!')">
+
+                            Edit Profile
+
+                        </button>
+                        `
+                    }
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        if (data.posts.length === 0) {
+
+            profilePosts.innerHTML = `
+
+                <div class="empty-feed">
+
+                    This user has not posted anything yet.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        profilePosts.innerHTML = "";
+
+
+        data.posts.forEach(post => {
+
+            const postElement =
+                createPostElement(
+                    post
+                );
+
+
+            profilePosts.appendChild(
+                postElement
+            );
+
+
+            loadComments(
+                post._id
+            );
+
+        });
+
+
+    } catch (error) {
+
+        console.log(
+            "Profile error:",
+            error
+        );
+
+
+        profileContent.innerHTML = `
+
+            <div class="no-comments">
+
+                Unable to load profile.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+
+async function openMyProfile() {
+
+    const user =
+        JSON.parse(
+            localStorage.getItem(
+                "connectHubUser"
+            )
+        );
+
+
+    if (user) {
+
+        openProfile(
+            user.id
+        );
+
+    }
+
+}
+
+
+
+async function profileToggleFollow(
+    userId
+) {
+
+    await toggleFollow(
+        userId
+    );
+
+
+    openProfile(
+        userId
+    );
+
+}
+
+
+
+/* ==================== POSTS ==================== */
+
+
+async function createPost() {
+
+    const content =
+        document.getElementById(
+            "postContent"
+        ).value.trim();
+
+
+    const message =
+        document.getElementById(
+            "postMessage"
+        );
+
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    if (!content) {
+
+        message.textContent =
+            "Please write something.";
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/posts",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            "Bearer " + token
+                    },
+
+                    body: JSON.stringify({
+                        content
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            message.textContent =
+                data.message;
+
+            return;
+
+        }
+
+
+        document.getElementById(
+            "postContent"
+        ).value = "";
+
+
+        message.textContent =
+            "Post created successfully!";
+
+
+        loadPosts();
+
+
+        setTimeout(() => {
+
+            message.textContent = "";
+
+        }, 2000);
+
+
+    } catch (error) {
+
+        message.textContent =
+            "Unable to create post.";
+
+    }
+
+}
+
+
+
+async function loadPosts() {
+
+    const feed =
+        document.getElementById(
+            "feed"
+        );
+
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    feed.innerHTML =
+        '<div class="loading">Loading posts...</div>';
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/posts",
+                {
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            feed.innerHTML =
+                '<div class="empty-feed">Unable to load posts.</div>';
+
+            return;
+
+        }
+
+
+        const posts =
+            await response.json();
+
+
+        if (posts.length === 0) {
+
+            feed.innerHTML =
+                '<div class="empty-feed">No posts yet. Be the first to post!</div>';
+
+            return;
+
+        }
+
+
+        feed.innerHTML = "";
+
+
+        posts.forEach(post => {
+
+            const postElement =
+                createPostElement(
+                    post
+                );
+
+
+            feed.appendChild(
+                postElement
+            );
+
+
+            loadComments(
+                post._id
+            );
+
+        });
+
+
+    } catch (error) {
+
+        feed.innerHTML =
+            '<div class="empty-feed">Unable to connect to server.</div>';
+
+    }
+
+}
+
+
+
+function createPostElement(post) {
+
+    const currentUser =
+        JSON.parse(
+            localStorage.getItem(
+                "connectHubUser"
+            )
+        );
+
+
+    const postDiv =
+        document.createElement(
+            "div"
+        );
+
+
+    postDiv.className =
+        "post";
+
+
+    const authorName =
+        post.author?.name ||
+        "Unknown User";
+
+
+    const firstLetter =
+        authorName
+            .charAt(0)
+            .toUpperCase();
+
+
+    const date =
+        new Date(
+            post.createdAt
+        ).toLocaleString();
+
+
+    const likeCount =
+        post.likes
+        ?
+        post.likes.length
+        :
+        0;
+
+
+    const liked =
+        post.likes?.some(
+            user =>
+                user._id ===
+                currentUser.id
+        );
+
+
+    const isOwner =
+        post.author?._id ===
+        currentUser.id;
+
+
+    postDiv.innerHTML = `
+
+        <div class="post-header">
+
+            <div class="author">
+
+                <div
+                    class="avatar"
+                    onclick="openProfile('${post.author?._id}')">
+
+                    ${escapeHtml(firstLetter)}
+
+                </div>
+
+
+                <div>
+
+                    <div
+                        class="author-name"
+                        onclick="openProfile('${post.author?._id}')">
+
+                        ${escapeHtml(authorName)}
+
+                    </div>
+
+
+                    <div class="post-date">
+
+                        ${date}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            ${
+                isOwner
+                ?
+                `
+                <button
+                    class="delete-btn"
+                    onclick="deletePost('${post._id}')">
+
+                    Delete
+
+                </button>
+                `
+                :
+                ""
+            }
+
+
+        </div>
+
+
+        <div class="post-content">
+
+            ${escapeHtml(post.content)}
+
+        </div>
+
+
+        <div class="post-actions">
+
+            <button
+                class="like-btn"
+                onclick="likePost('${post._id}')">
+
+                ${liked ? "❤️" : "♡"}
+
+                ${likeCount}
+
+                ${likeCount === 1 ? "Like" : "Likes"}
+
+            </button>
+
+        </div>
+
+
+        <div class="comments-section">
+
+            <div class="comments-title">
+
+                Comments
+
+            </div>
+
+
+            <div id="comments-${post._id}">
+
+                <div class="loading">
+
+                    Loading comments...
+
+                </div>
+
+            </div>
+
+
+            <div class="comment-form">
+
+                <input
+                    type="text"
+                    id="commentInput-${post._id}"
+                    class="comment-input"
+                    placeholder="Write a comment...">
+
+
+                <button
+                    class="comment-btn"
+                    onclick="addComment('${post._id}')">
+
+                    Comment
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    return postDiv;
+
+}
+
+
+
+/* ==================== LIKE ==================== */
+
+
+async function likePost(postId) {
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/posts/${postId}/like`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        if (response.ok) {
+
+            loadPosts();
+
+            loadNotificationCount();
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Like error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* ==================== DELETE POST ==================== */
+
+
+async function deletePost(postId) {
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete this post?"
+        );
+
+
+    if (!confirmDelete) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/posts/${postId}`,
+                {
+                    method: "DELETE",
+
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        if (response.ok) {
+
+            loadPosts();
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Delete error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* ==================== COMMENTS ==================== */
+
+
+async function loadComments(postId) {
+
+    const container =
+        document.getElementById(
+            `comments-${postId}`
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/comments/${postId}`,
+                {
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            container.innerHTML =
+                '<div class="no-comments">Unable to load comments.</div>';
+
+            return;
+
+        }
+
+
+        const comments =
+            await response.json();
+
+
+        if (comments.length === 0) {
+
+            container.innerHTML =
+                '<div class="no-comments">No comments yet.</div>';
+
+            return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        comments.forEach(comment => {
+
+            const commentDiv =
+                document.createElement(
+                    "div"
+                );
+
+
+            commentDiv.className =
+                "comment";
+
+
+            const authorName =
+                comment.author?.name ||
+                "Unknown User";
+
+
+            const date =
+                new Date(
+                    comment.createdAt
+                ).toLocaleString();
+
+
+            commentDiv.innerHTML = `
+
+                <div class="comment-author">
+
+                    ${escapeHtml(authorName)}
+
+                </div>
+
+
+                <div class="comment-text">
+
+                    ${escapeHtml(comment.text)}
+
+                </div>
+
+
+                <div class="comment-date">
+
+                    ${date}
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                commentDiv
+            );
+
+        });
+
+
+    } catch (error) {
+
+        container.innerHTML =
+            '<div class="no-comments">Unable to connect to server.</div>';
+
+    }
+
+}
+
+
+
+async function addComment(postId) {
+
+    const input =
+        document.getElementById(
+            `commentInput-${postId}`
+        );
+
+
+    const text =
+        input.value.trim();
+
+
+    const token =
+        localStorage.getItem(
+            "connectHubToken"
+        );
+
+
+    if (!text) {
+
+        alert(
+            "Please write a comment."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/comments/${postId}`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            "Bearer " + token
+                    },
+
+                    body: JSON.stringify({
+                        text
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.message
+            );
+
+            return;
+
+        }
+
+
+        input.value = "";
+
+
+        loadComments(
+            postId
+        );
+
+
+        loadNotificationCount();
+
+
+    } catch (error) {
+
+        console.log(
+            "Comment error:",
+            error
+        );
+
+
+        alert(
+            "Unable to add comment."
+        );
+
+    }
+
+}
+
+
+
+/* ==================== SECURITY ==================== */
+
+
+function escapeHtml(text) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        text;
+
+
+    return div.innerHTML;
+
+}
+
+
+
+/* ==================== CLOSE NOTIFICATION WHEN CLICKING OUTSIDE ==================== */
+
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const wrapper =
+            document.querySelector(
+                ".notification-wrapper"
+            );
+
+
+        const panel =
+            document.getElementById(
+                "notificationPanel"
+            );
+
+
+        if (
+            wrapper &&
+            panel &&
+            !wrapper.contains(event.target)
+        ) {
+
+            panel.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+);
+
+
+
+/* ==================== AUTO LOGIN ==================== */
+
+
+window.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const token =
+            localStorage.getItem(
+                "connectHubToken"
+            );
+
+
+        const user =
+            localStorage.getItem(
+                "connectHubUser"
+            );
+
+
+        if (token && user) {
+
+            showDashboard();
+
+        }
+
+    }
+);
+
+
+/* ==================== NOTIFICATION AUTO REFRESH ==================== */
+
+
+setInterval(
+    () => {
+
+        const token =
+            localStorage.getItem(
+                "connectHubToken"
+            );
+
+
+        if (token) {
+
+            loadNotificationCount();
+
+        }
+
+    },
+    10000
+);
+
+
+</script>
+
+</body>
+
+</html>
